@@ -1,0 +1,336 @@
+ic_set_global geo_cad 0 toptol_userset
+ic_set_global geo_cad 0.0 toler
+ic_undo_group_begin
+ic_geo_new_family GEOM
+ic_boco_set_part_color GEOM
+ic_empty_tetin
+ic_point {} GEOM pnt.00 0,0,0
+ic_undo_group_end
+ic_undo_group_begin
+ic_point {} GEOM pnt.01 0,0,|FIBER_LENGTH|
+ic_undo_group_end
+ic_set_global geo_cad 0 toptol_userset
+ic_set_global geo_cad 3e-06 toler
+ic_set_global geo_cad 3e-06 toler
+ic_set_global geo_cad 3e-06 toler
+ic_undo_group_begin
+ic_surface cyl GEOM srf.00 {pnt.00 pnt.01 |FIBER_RADIUS| |FIBER_RADIUS| 1 1}
+ic_set_global geo_cad 3e-06 toler
+ic_set_dormant_pickable point 0 {}
+ic_set_dormant_pickable curve 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_surface cyl GEOM srf.01 {pnt.00 pnt.01 |OVERSET_RADIUS| |OVERSET_RADIUS| 1 1}
+ic_set_global geo_cad 3e-06 toler
+ic_set_dormant_pickable point 0 {}
+ic_set_dormant_pickable curve 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_surface sphere GEOM srf.02 {pnt.00 {0 0 -|OVERSET_RADIUS|} |OVERSET_RADIUS| 0 90}
+ic_set_global geo_cad 3e-06 toler
+ic_set_dormant_pickable point 0 {}
+ic_set_dormant_pickable curve 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_surface sphere GEOM srf.03 {pnt.01 {0 0 |SPHERE_TAIL|} |OVERSET_RADIUS| 0 90}
+ic_set_global geo_cad 3e-06 toler
+ic_set_dormant_pickable point 0 {}
+ic_set_dormant_pickable curve 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_incident point pnt.00 1
+ic_geo_incident point pnt.01 1
+ic_geo_incident point GEOM.1 1
+ic_geo_incident point GEOM.3 1
+ic_geo_incident point GEOM.8 1
+ic_geo_incident point GEOM.10 1
+ic_geo_incident point GEOM.11 1
+ic_geo_incident point GEOM.13 1
+ic_geo_incident point GEOM.18 1
+ic_geo_incident point GEOM.20 1
+ic_geo_incident point GEOM.23 1
+ic_geo_incident point GEOM.24 1
+ic_geo_incident point GEOM.25 1
+ic_geo_incident point GEOM.28 1
+ic_geo_incident point GEOM.29 1
+ic_geo_incident point GEOM.30 1
+ic_delete_geometry point names {pnt.00 pnt.01 GEOM.1 GEOM.3 GEOM.11 GEOM.13} 0 1
+ic_geo_set_dormant_entity point {GEOM.8 GEOM.10 GEOM.18 GEOM.20 GEOM.23 GEOM.24 GEOM.25 GEOM.28 GEOM.29 GEOM.30} 1
+ic_set_dormant_pickable point 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_set_dormant_pickable point 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_dormant_entity curve {srf.00.C0 srf.00.C1 srf.00e3 srf.01.C0 srf.01.C1 srf.01e12 srf.02.C0 srf.02e20 srf.02.1e23 srf.02.1e24 srf.03.C0 srf.03e27 srf.03.1e30 srf.03.1e31} 1
+ic_set_dormant_pickable curve 0 {}
+ic_undo_group_end
+ic_undo_group_begin
+ic_delete_geometry surface names {srf.01.S2 srf.01.S1} 0
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_part surface {srf.03 srf.03.1 srf.01 srf.02 srf.02.1} OVERSET_|NUMBER| 0
+ic_delete_empty_parts
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_part surface srf.00.S1 FIBER_HEAD_|NUMBER| 0
+ic_delete_empty_parts
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_part surface srf.00 FIBER_MANTLE_|NUMBER| 0
+ic_delete_empty_parts
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_part surface srf.00.S2 FIBER_TAIL_|NUMBER| 0
+ic_delete_empty_parts
+ic_undo_group_end
+ic_set_global geo_cad 3e-06 toler
+ic_undo_group_begin
+ic_set_global geo_cad 1 toptol_userset
+ic_geo_delete_unattached { FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER| ORFN} 0 1
+ic_build_topo 3e-06 -angle 30 -filter_points -filter_curves -no_concat -keep_old_names FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER| ORFN
+ic_geo_delete_unattached { FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER| ORFN}
+ic_undo_group_begin
+ic_geo_create_surface_edges {srf.03 srf.03.1 srf.01 srf.02 srf.02.1}
+ic_undo_group_end
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_part curve {srf.01e12 srf.02.1e23 srf.02.C0 srf.02.1e24 srf.02e20 srf.03e27 srf.03.1e31 srf.03.C0 srf.03.1e30} OVERSET_|NUMBER| 0
+ic_delete_empty_parts
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_set_part curve {srf.00.C1 srf.00.C0} FIBER_MANTLE_|NUMBER| 0
+ic_delete_empty_parts
+ic_undo_group_end
+ic_undo_group_begin
+ic_geo_new_family FLUID_|NUMBER|
+ic_boco_set_part_color FLUID_|NUMBER|
+ic_geo_create_volume {0.0 0.0 -|FIBER_RADIUS|} {} FLUID_|NUMBER|
+ic_undo_group_end
+ic_delete_empty_parts
+ic_delete_empty_parts
+ic_undo_group_begin
+ic_hex_initialize_blocking {} FLUID_|NUMBER| 0 101
+ic_hex_unblank_blocks
+ic_hex_multi_grid_level 0
+ic_hex_projection_limit 0
+ic_hex_default_bunching_law default 2.0
+ic_hex_floating_grid off
+ic_hex_transfinite_degree 1
+ic_hex_unstruct_face_type one_tri
+ic_hex_set_unstruct_face_method uniform_quad
+ic_hex_set_n_tetra_smoothing_steps 20
+ic_hex_error_messages off_minor
+ic_hex_set_piercing 0
+ic_undo_group_end
+ic_undo_group_begin
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_undo_major_start split_grid
+ic_hex_split_grid 25 26 abs:|OVERSET_RADIUS| m GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER|
+ic_hex_undo_major_end split_grid
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_undo_major_start split_grid
+ic_hex_split_grid 73 26 abs:|FIBER_LENGTH| m GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER|
+ic_hex_undo_major_end split_grid
+ic_undo_group_end
+ic_hex_mark_blocks unmark
+ic_undo_group_begin
+ic_hex_mark_blocks superblock 27
+ic_hex_mark_blocks superblock 28
+ic_hex_mark_blocks superblock 13
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_mark_blocks face_neighbors corners { 85 86 89 90 } { 69 70 73 74 }
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_ogrid 1 m GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER| -version 50
+ic_hex_mark_blocks unmark
+ic_undo_group_end
+ic_hex_mark_blocks unmark
+ic_hex_find_comp_curve srf.00.C0
+ic_undo_group_begin
+ic_hex_undo_major_start set_edge_projection
+ic_hex_set_edge_projection 101 109 0 1 srf.00.C0
+ic_hex_set_edge_projection 97 101 0 1 srf.00.C0
+ic_hex_set_edge_projection 97 105 0 1 srf.00.C0
+ic_hex_set_edge_projection 105 109 0 1 srf.00.C0
+ic_hex_undo_major_end set_edge_projection
+ic_undo_group_end
+ic_hex_find_comp_curve srf.00.C1
+ic_undo_group_begin
+ic_hex_undo_major_start set_edge_projection
+ic_hex_set_edge_projection 102 110 0 1 srf.00.C1
+ic_hex_set_edge_projection 98 102 0 1 srf.00.C1
+ic_hex_set_edge_projection 98 106 0 1 srf.00.C1
+ic_hex_set_edge_projection 106 110 0 1 srf.00.C1
+ic_hex_undo_major_end set_edge_projection
+ic_undo_group_end
+ic_hex_find_comp_curve srf.03.1e30
+ic_hex_find_comp_curve srf.03e27
+ic_undo_group_begin
+ic_hex_create_composite {srf.03.1e30 srf.03e27}
+ic_hex_undo_major_start set_edge_projection
+ic_hex_set_edge_projection 85 89 0 1 srf.03.1e30
+ic_hex_set_edge_projection 89 90 0 1 srf.03.1e30
+ic_hex_set_edge_projection 86 90 0 1 srf.03.1e30
+ic_hex_set_edge_projection 85 86 0 1 srf.03.1e30
+ic_hex_undo_major_end set_edge_projection
+ic_undo_group_end
+ic_hex_find_comp_curve srf.02.1e23
+ic_hex_find_comp_curve srf.02e20
+ic_undo_group_begin
+ic_hex_create_composite {srf.02.1e23 srf.02e20}
+ic_hex_undo_major_start set_edge_projection
+ic_hex_set_edge_projection 73 74 0 1 srf.02.1e23
+ic_hex_set_edge_projection 69 73 0 1 srf.02.1e23
+ic_hex_set_edge_projection 69 70 0 1 srf.02.1e23
+ic_hex_set_edge_projection 70 74 0 1 srf.02.1e23
+ic_hex_undo_major_end set_edge_projection
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_project_to_surface FLUID_|NUMBER| FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER|
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_mark_blocks unmark
+ic_hex_mark_blocks superblock 27
+ic_hex_change_element_id VORFN
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_node_location z |BLOCK_TAIL| -csys global node_numbers {{  103  } {  99  } {  107  } {  111  }}
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_node_location z -|FIBER_RADIUS| -csys global node_numbers {{  96  } {  104  } {  108  } {  100  }}
+ic_undo_group_begin
+ic_hex_align_vertices2 102 101 -nodes 100 103
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_align_vertices2 98 97 -nodes 96 99
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_align_vertices2 109 110 -nodes 111 108
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_align_vertices2 105 106 -nodes 107 104
+ic_undo_group_end
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_project_to_surface FLUID_|NUMBER| FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER|
+ic_undo_group_end
+ic_hex_mark_blocks unmark
+ic_undo_group_begin
+ic_hex_mark_blocks superblock 28
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_mark_blocks face_neighbors corners { 98 106 102 110 }
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_ogrid 1 m GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER| -version 50
+ic_hex_mark_blocks unmark
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_mark_blocks superblock 13
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_mark_blocks face_neighbors corners { 97 105 101 109 }
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_ogrid 1 m GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER| -version 50
+ic_hex_mark_blocks unmark
+ic_undo_group_end
+ic_hex_mark_blocks unmark
+ic_undo_group_begin
+ic_geo_set_family_params FIBER_MANTLE_|NUMBER| no_crv_inf prism 0 emax 0.0 ehgt 1e-7 hrat 1.05 nlay 0 erat 0 ewid 0 emin 0.0 edev 0.0 prism_height_limit 0 law -1 split_wall 0 internal_wall 0
+ic_geo_set_family_params FIBER_HEAD_|NUMBER| no_crv_inf prism 0 emax 0.0 ehgt 1e-7 hrat 1.1 nlay 0 erat 0 ewid 0 emin 0.0 edev 0.0 prism_height_limit 0 law -1 split_wall 0 internal_wall 0
+ic_geo_set_family_params FIBER_TAIL_|NUMBER| no_crv_inf prism 0 emax 0.0 ehgt 1e-7 hrat 1.1 nlay 0 erat 0 ewid 0 emin 0.0 edev 0.0 prism_height_limit 0 law -1 split_wall 0 internal_wall 0
+ic_geo_set_family_params FLUID_|NUMBER| no_crv_inf prism 0 hexcore 1
+ic_undo_group_end
+ic_geo_params_blank_done part 1
+ic_undo_group_begin
+ic_geo_set_family_params OVERSET_|NUMBER| no_crv_inf prism 0 emax 100000.0 ehgt 0 hrat 0 nlay 0 erat 0 ewid 0 emin 0.0 edev 0.0 prism_height_limit 0 law -1 split_wall 0 internal_wall 0
+ic_undo_group_end
+ic_geo_params_blank_done part 1
+ic_undo_group_begin
+ic_hex_set_mesh 89 102 n |OVERSET_RADIAL| h1 |END_CELL| h2 |START_CELL| r1 2 r2 2 lmax 0 geo2 copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_mesh 89 90 n |CIRCLE_ARC| h1rel 0.0 h2rel 0.0 r1 2 r2 2 lmax 0 uniform copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_mesh 85 89 n |CIRCLE_ARC| h1rel 0.0 h2rel linked 22 26 r1 2 r2 2 lmax 0 uniform copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_mesh 89 26 n |SPHERE_ARC| h1rel 0.0 h2rel 0.0 r1 2 r2 2 lmax 0 uniform copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_mesh 25 73 n |SPHERE_ARC| h1rel 0.0 h2rel 0.0 r1 2 r2 2 lmax 0 uniform copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin
+ic_hex_set_mesh 102 116 n |INSIDE_FIBER| h1rel linked 102 89 h2rel linked 116 122 r1 2 r2 2 lmax 0 geo2 copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin 
+ic_hex_set_mesh 101 128 n |INSIDE_FIBER| h1rel linked 101 73 h2rel linked 128 134 r1 2 r2 2 lmax 0 geo2 copy_to_parallel unlocked
+ic_undo_group_end
+ic_undo_group_begin 
+ic_hex_set_mesh 73 89 n |MANTLE_AXIAL| h1rel 0.0 h2rel 0.0 r1 2 r2 2 lmax 0 uniform copy_to_parallel unlocked
+ic_undo_group_end 
+ic_hex_create_mesh GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER| proj 2 dim_to_mesh 3
+ic_hex_write_file |WRITE_DIR|/fiber_|NUMBER|.uns GEOM OVERSET_|NUMBER| FIBER_HEAD_|NUMBER| FIBER_MANTLE_|NUMBER| FIBER_TAIL_|NUMBER| FLUID_|NUMBER| proj 2 dim_to_mesh 3 no_boco
+ic_uns_load |WRITE_DIR|/fiber_|NUMBER|.uns 3 0 {} 1
+ic_uns_subset_create 
+ic_uns_subset_add_families_and_types uns_sub_0 {FLUID_|NUMBER| FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER| ORFN} HEXA_8
+ic_uns_subset_delete uns_sub_0
+ic_uns_update_family_type visible {FLUID_|NUMBER| FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| GEOM FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER| ORFN} {!LINE_2 QUAD_4 !HEXA_8} update 0
+ic_uns_diag_reset_degen_min_max 
+ic_boco_solver 
+ic_boco_clear_icons 
+ic_boco_set GEOM {{ 1  {color}  16663866  }}
+ic_boco_set OVERSET_|NUMBER| {{1 IFACE 1} { 1  {color}  16663866  }}
+ic_boco_set FIBER_MANTLE_|NUMBER| {{1 WALL 0} { 1  {color}  16663866  }}
+ic_boco_set FLUID_|NUMBER| {{1 FLUID 0} { 1  {color}  12109107  }}
+ic_boco_set ORFN {}
+ic_boco_set FIBER_HEAD_|NUMBER| {{1 WALL 0} { 1  {color}  16663866  }}
+ic_boco_set FIBER_TAIL_|NUMBER| {{1 WALL 0} { 1  {color}  16663866  }}
+ic_geo_new_family VORFN 0
+ic_uns_new_family VORFN 1
+ic_boco_set VORFN {}
+ic_undo_group_begin 
+ic_start_bigunsop 
+ic_delete_elements family GEOM no_undo 1
+ic_delete_geometry all families GEOM 1 1
+ic_finish_bigunsop 
+ic_undo_group_end 
+ic_uns_update_family_type visible {FLUID FIBER_MANTLE_|NUMBER| OVERSET_|NUMBER| FIBER_TAIL_|NUMBER| FIBER_HEAD_|NUMBER| ORFN VORFN} {!LINE_2 QUAD_4 !HEXA_8} update 0
+ic_boco_solver 
+ic_boco_solver {Ansys Fluent}
+ic_solution_set_solver {Ansys Fluent} 1
+ic_boco_solver 
+ic_boco_solver {Ansys Fluent}
+ic_solution_set_solver {Ansys Fluent} 1
+ic_boco_save |WRITE_DIR|/fiber_|NUMBER|.fbc
+ic_boco_save_atr |WRITE_DIR|/fiber_|NUMBER|.atr
+ic_chdir |WRITE_DIR|
+ic_delete_empty_parts 
+ic_delete_empty_parts 
+ic_save_tetin fiber_|NUMBER|.tin 0 0 {} {} 0 0 1
+ic_uns_num_couplings 
+ic_undo_group_begin 
+ic_uns_create_diagnostic_edgelist 1
+ic_uns_diagnostic subset all diag_type uncovered fix_fam FIX_UNCOVERED diag_verb {Uncovered faces} fams {} busy_off 1 quiet 1
+ic_uns_create_diagnostic_edgelist 0
+ic_undo_group_end 
+ic_uns_min_metric Quality {} {}
+ic_uns_check_duplicate_numbers 
+ic_save_unstruct fiber_|NUMBER|.uns 1 {} {} {}
+ic_uns_set_modified 1
+ic_hex_save_blocking fiber_|NUMBER|.blk
+ic_boco_solver 
+ic_boco_solver {Ansys Fluent}
+ic_solution_set_solver {Ansys Fluent} 1
+ic_boco_save fiber_|NUMBER|.fbc
+ic_boco_save_atr fiber_|NUMBER|.atr
+ic_save_project_file |WRITE_DIR|/fiber_|NUMBER|.prj {array\ set\ file_name\ \{ {    catia_dir .} {    parts_dir .} {    domain_loaded 0} {    cart_file_loaded 0} {    cart_file {}} {    domain_saved fiber_|NUMBER|.uns} {    archive {}} {    med_replay {}} {    topology_dir .} {    ugparts_dir .} {    icons {{$env(ICEM_ACN)/lib/ai_env/icons} {$env(ICEM_ACN)/lib/va/EZCAD/icons} {$env(ICEM_ACN)/lib/icons} {$env(ICEM_ACN)/lib/va/CABIN/icons}}} {    tetin fiber_|NUMBER|.tin} {    family_boco fiber_|NUMBER|.fbc} {    iges_dir .} {    solver_params_loaded 0} {    attributes_loaded 0} {    project_lock {}} {    attributes fiber_|NUMBER|.atr} {    domain fiber_|NUMBER|.uns} {    domains_dir .} {    settings_loaded 0} {    settings fiber_|NUMBER|.prj} {    blocking fiber_|NUMBER|.blk} {    hexa_replay {}} {    transfer_dir .} {    mesh_dir .} {    family_topo {}} {    gemsparts_dir .} {    family_boco_loaded 0} {    tetin_loaded 0} {    project_dir .} {    topo_mulcad_out {}} {    solver_params {}} \} array\ set\ options\ \{ {    expert 1} {    remote_path {}} {    tree_disp_quad 2} {    tree_disp_pyra 2} {    evaluate_diagnostic 0} {    histo_show_default 1} {    select_toggle_corners 0} {    remove_all 0} {    keep_existing_file_names 0} {    record_journal 0} {    edit_wait 0} {    face_mode 1} {    select_mode all} {    med_save_emergency_tetin 1} {    user_name axel} {    diag_which all} {    uns_warn_if_display 500000} {    bubble_delay 1000} {    external_num 1} {    tree_disp_tri 2} {    apply_all 0} {    default_solver {Ansys Fluent}} {    temporary_directory {}} {    flood_select_angle 0} {    home_after_load 1} {    project_active 0} {    histo_color_by_quality_default 1} {    undo_logging 1} {    tree_disp_hexa 2} {    histo_solid_default 1} {    host_name cfdclu59.ugent.be} {    xhidden_full 1} {    replay_internal_editor 1} {    editor vi} {    mouse_color orange} {    clear_undo 1} {    remote_acn {}} {    remote_sh csh} {    tree_disp_penta 2} {    n_processors 1} {    remote_host {}} {    save_to_new 0} {    quality_info Quality} {    tree_disp_node 0} {    med_save_emergency_mesh 1} {    redtext_color red} {    tree_disp_line 0} {    select_edge_mode 0} {    use_dlremote 0} {    max_mesh_map_size {}} {    show_tris 1} {    remote_user {}} {    icon_size Normal} {    enable_idle 0} {    auto_save_views 1} {    max_cad_map_size {}} {    display_origin 0} {    uns_warn_user_if_display 1000000} {    detail_info 0} {    win_java_help 0} {    show_factor 1} {    boundary_mode all} {    clean_up_tmp_files 1} {    auto_fix_uncovered_faces 1} {    med_save_emergency_blocking 1} {    max_binary_tetin 0} {    tree_disp_tetra 2} \} array\ set\ disp_options\ \{ {    uns_dualmesh 0} {    uns_warn_if_display 500000} {    uns_normals_colored 0} {    uns_icons 0} {    uns_locked_elements 0} {    uns_shrink_npos 0} {    uns_node_type None} {    uns_icons_normals_vol 0} {    uns_bcfield 0} {    backup Wire} {    uns_nodes 0} {    uns_only_edges 0} {    uns_surf_bounds 0} {    uns_wide_lines 0} {    uns_vol_bounds 0} {    uns_displ_orient Triad} {    uns_orientation 0} {    uns_directions 0} {    uns_thickness 0} {    uns_shell_diagnostic 0} {    uns_normals 0} {    uns_couplings 0} {    uns_periodicity 0} {    uns_single_surfaces 0} {    uns_midside_nodes 1} {    uns_shrink 100} {    uns_multiple_surfaces 0} {    uns_no_inner 0} {    uns_enums 0} {    uns_disp Wire} {    uns_bcfield_name {}} {    uns_color_by_quality 0} {    uns_changes 0} {    uns_cut_delay_count 1000} \} {set icon_size1 24} {set icon_size2 35} {set thickness_defined 0} {set solver_type 1} {set solver_setup -1} array\ set\ prism_values\ \{ {    n_triangle_smoothing_steps 5} {    min_smoothing_steps 6} {    first_layer_smoothing_steps 1} {    new_volume {}} {    height {}} {    prism_height_limit {}} {    interpolate_heights 0} {    n_tetra_smoothing_steps 10} {    do_checks {}} {    delete_standalone 1} {    ortho_weight 0.50} {    max_aspect_ratio {}} {    ratio_max {}} {    incremental_write 0} {    total_height {}} {    use_prism_v10 0} {    intermediate_write 1} {    delete_base_triangles {}} {    ratio_multiplier {}} {    verbosity_level 1} {    refine_prism_boundary 1} {    max_size_ratio {}} {    triangle_quality {}} {    max_prism_angle 180} {    tetra_smooth_limit 0.3} {    max_jump_factor 5} {    use_existing_quad_layers 0} {    layers 3} {    fillet 0.10} {    into_orphan 0} {    init_dir_from_prev {}} {    blayer_2d 0} {    do_not_allow_sticking {}} {    top_family {}} {    law exponential} {    min_smoothing_val 0.1} {    auto_reduction 0} {    stop_columns 1} {    stair_step 1} {    smoothing_steps 12} {    side_family {}} {    min_prism_quality 0.01} {    ratio 1.2} \} {set aie_current_flavor {}} array\ set\ vid_options\ \{ {    wb_import_tritol 0.001} {    wb_import_mix_res_line 0} {    wb_import_cad_att_pre {SDFEA;DDM}} {    wb_import_surface_bodies 1} {    wb_NS_to_subset 0} {    wb_import_mat_points 0} {    auxiliary 0} {    wb_import_mix_res_surface 0} {    wb_import_mix_res -1} {    wb_import_cad_att_trans 1} {    show_name 0} {    wb_import_delete_solids 0} {    wb_import_solid_bodies 1} {    wb_import_save_pmdb {}} {    wb_import_mix_res_solid 0} {    inherit 1} {    default_part GEOM} {    new_srf_topo 1} {    wb_import_associativity_model_name {}} {    DelPerFlag 0} {    show_item_name 0} {    wb_import_save_partfile 0} {    wb_import_line_bodies 0} {    composite_tolerance 1.0} {    wb_import_en_sym_proc 1} {    wb_NS_to_entity_parts 0} {    wb_import_reference_key 0} {    wb_import_work_points 0} {    wb_import_sel_proc 0} {    wb_NS_only 0} {    wb_import_pluginname {}} {    wb_import_mix_res_point 0} {    wb_import_refresh_pmdb 0} {    wb_import_create_solids 0} {    wb_import_load_pmdb {}} {    wb_import_scale_geo Default} {    wb_import_sel_pre {}} {    wb_import_lcs 0} {    replace 0} {    wb_import_cad_associativity 0} {    same_pnt_tol 1e-4} {    tdv_axes 1} {    vid_mode 0} {    DelBlkPerFlag 0} \} {set savedTreeVisibility {geomNode 1 geom_subsetNode 0 geomPointNode 0 geomCurveNode 2 geomSurfNode 0 geomBodyNode 0 meshNode 1 mesh_subsetNode 2 meshLineNode 0 meshShellNode 2 meshQuadNode 2 meshVolumeNode 0 meshHexaNode 0 blockingNode 1 block_subsetNode 2 block_vertNode 0 block_edgeNode 2 block_faceNode 0 block_blockNode 0 block_meshNode 0 topoNode 2 topo-root 2 partNode 2 part-FIBER_HEAD_|NUMBER| 2 part-FIBER_MANTLE_|NUMBER| 2 part-FIBER_TAIL_|NUMBER| 2 part-FLUID_|NUMBER| 2 part-OVERSET_|NUMBER| 2 part-VORFN 0}} {set last_view {rot {0 0.70710678118654502 0 0.70710678118655002} scale {21835026.1756 21835026.1756 21835026.1756} center {0.0 0.0 0.00266} pos {57966.4977704 -144.911099753 0}}} array\ set\ cut_info\ \{ {    active 0} \} array\ set\ hex_option\ \{ {    default_bunching_ratio 2.0} {    floating_grid 0} {    project_to_topo 0} {    n_tetra_smoothing_steps 20} {    sketching_mode 0} {    trfDeg 1} {    wr_hexa7 0} {    hexa_projection_mode 0} {    smooth_ogrid 0} {    find_worst 1-3} {    hexa_verbose_mode 0} {    old_eparams 0} {    uns_face_mesh_method uniform_quad} {    multigrid_level 0} {    uns_face_mesh one_tri} {    check_blck 0} {    proj_limit 0} {    check_inv 0} {    project_bspline 0} {    hexa_update_mode 1} {    default_bunching_law BiGeometric} {    worse_criterion Quality} \} array\ set\ saved_views\ \{ {    views {}} \}} {ICEM CFD}
+ic_exec /cfdfile2/lusers/CO7/ANSYS/2022R1/ansys_inc/v221/icemcfd/linux64_amd/icemcfd/output-interfaces/fluent6 -dom |WRITE_DIR|/fiber_|NUMBER|.uns -b fiber_|NUMBER|.fbc fiber_|NUMBER|
+
+

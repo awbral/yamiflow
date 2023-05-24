@@ -1,0 +1,278 @@
+/file/set-batch-options n n n
+/file/async-optimize? yes
+/file/cffio-options/io-mode 4
+(enable-dynamic-mesh-node-ids #t)
+(define first-fiber |FIRST_FIBER|)
+(define last-fiber |LAST_FIBER|)
+(define yarn-length |YARN_LENGTH|)
+(define load-separately |LOAD_SEPARATELY|)
+(define mesh-directory "|MESH_DIR|")
+(define velocity-inlet |V|)
+(define pressure-ambient |P|)
+(define temperature-ambient |T|)
+(define turb-intensity |I|)
+(define turb-length-scale |L_T|)
+(define displ-z |DZ|)
+(define rotation-angle |ROT_ANGLE|)
+(define rotation-axis "|ROT_AXIS|")
+(define yarn-axis "|YARN_AXIS|")
+(define gap-threshold |GAP|)
+(define length-scale |LENGTH_SCALE|)
+(define case-name "|CASE|")
+(define n-1sto-iter |1STO|)
+(define n-2ndo-iter |2NDO|)
+
+(rp-var-define 'udf/v velocity-inlet 'int #f)
+(display (%rpgetvar 'udf/v))
+(define case-name-update (string-append case-name (format  #f "_v~a" velocity-inlet)))
+
+;   function definitions (copied from CoCoNuT)
+(define (send_message message)
+    (system (string-append "touch " message ".fiber"))
+)
+(define (wait_message message)
+    (do ((j 0 j)) ((= j 1))
+        (if
+            (file-exists? (string-append message ".fiber"))
+            (begin
+                (set! j 1)
+                (system (string-append "rm " message ".fiber"))
+            )
+            (system "sleep 0.1")
+        )
+    )
+)
+
+
+; compile and load UDF
+/define/user-defined/compiled-functions compile "post_process" y "post_process.c" "" ""
+/define/user-defined/compiled-functions load "post_process"
+
+
+; print date and mesh size
+(ti-menu-load-string (format #f "/file/read-case ~a\n" case-name))
+!date
+/mesh/size-info
+
+
+; boundary and materials settings for background
+/define/models/energy? yes no no no yes
+/define/materials/change-create air air yes ideal-gas no no no no no no
+/define/models/viscous/turb-compressibility? yes
+(rpsetvar 'kw-mt0 0.1)
+define/models/viscous/kw-sst yes
+(ti-menu-load-string (format #f "/define/boundary-conditions/velocity-inlet inlet no no yes yes no ~a no ~a no ~a no yes ~a ~a\n" velocity-inlet pressure-ambient temperature-ambient turb-intensity turb-length-scale))
+(ti-menu-load-string (format #f "/define/boundary-conditions/pressure-outlet outlet  yes no ~a no ~a no yes no no yes ~a ~a yes no no no\n" pressure-ambient temperature-ambient turb-intensity turb-length-scale))
+/define/operating-conditions/operating-pressure 0
+
+
+; initialize flow to access field-variable registers later on
+;/solve/initialize/initialize-flow
+
+
+; load fibers
+(if load-separately
+    (do ((k first-fiber (+ k 1))) ((> k last-fiber))
+        (if (< k 10)
+            (begin
+                (ti-menu-load-string (format #f "/mesh/modify-zones/append-mesh \"~a/fiber_0~a/fiber_0~a_deformed.msh\"\n" mesh-directory k k))
+                (ti-menu-load-string (format #f "/mesh/modify-zones/translate-zone \"fluid_0~a\" () 0 0 ~a\n" k displ-z))
+            )
+            (begin
+                (ti-menu-load-string (format #f "/mesh/modify-zones/append-mesh \"~a/fiber_~a/fiber_~a_deformed.msh\"\n" mesh-directory k k))
+                (ti-menu-load-string (format #f "/mesh/modify-zones/translate-zone \"fluid_~a\" () 0 0 ~a\n" k displ-z))
+            )
+        )
+    )
+    (ti-menu-load-string (format #f "/mesh/modify-zones/append-mesh \"~a/meshes_coarse.cas.h5\"\n" mesh-directory))
+)
+/parallel/partition/print-active-partitions
+
+; split fiber mantles
+;(define n-splits 1)
+;(define start displ-z)
+;(define end 0)
+;(define margin 5e-6)
+;(do ((k 1 (+ k 1))) ((>= k n-splits))
+;    (set! end (+ start (/ yarn-length n-splits)))
+;    (ti-menu-load-string (format #f "/solve/cell-registers/add \"dz_~a\" type field-value field z-coordinate option in-range value1 ~a value2 ~a q q q \n" k (- start margin) (+ end margin)))
+;    (set! start end)
+;)
+
+(define string-fluid "")
+(define string-walls "")
+(do ((k first-fiber (+ k 1))) ((> k last-fiber))
+	(if (< k 10)
+		(begin
+			(set! string-fluid (string-append string-fluid (format #f "fluid_0~a " k)))
+			(set! string-walls (string-append string-walls (format #f "fiber_head_0~a fiber_mantle_0~a fiber_tail_0~a " k k k)))
+;			(do ((j 1 (+ j 1))) ((>= j n-splits))
+;			    (ti-menu-load-string (format #f "/mesh/modify-zones/sep-face-zone-mark \"fiber_mantle_0~a\" \"dz_~a\" yes \n" k j))
+;			)
+		)
+		(begin
+            (set! string-fluid (string-append string-fluid (format #f "fluid_~a " k)))
+            (set! string-walls (string-append string-walls (format #f "fiber_head_~a fiber_mantle_~a fiber_tail_~a " k k k)))
+;            (do ((j 1 (+ j 1))) ((>= j n-splits))
+;                (ti-menu-load-string (format #f "/mesh/modify-zones/sep-face-zone-mark \"fiber_mantle_~a\" \"dz_~a\" yes \n" k j))
+;			 )
+		)
+	)
+)
+
+
+; rotate zones
+(if (not (= rotation-angle 0))
+    (ti-menu-load-string (format #f "/mesh/modify-zones/rotate-zone ~a() ~a 0 0 0 ~a\n" string-fluid rotation-angle rotation-axis))
+)
+
+
+; set overset interface
+(ti-menu-load-string (format #f "/define/overset-interfaces/create overset_interface fluid () ~a() no\n" string-fluid))
+/solve/set/overset/interpolation-method 0
+/solve/set/overset/high-order-pressure? no
+/solve/set/overset/orphan-cell-treatment? yes
+/define/overset-interfaces/options/minimize-overlap? yes
+/define/overset-interfaces/options/expert? yes
+/define/overset-interfaces/options/verbosity 3
+/define/overset-interfaces/options/render-receptor-cells? yes
+/define/overset-interfaces/options/donor-priority-method 0
+/define/overset-interfaces/options/node-connected-donors? no
+/define/overset-interfaces/options/update-before-case-write? no
+;/define/overset-interfaces/intersect-all
+
+
+; overset gap adaption
+;/mesh/adapt/set/maximum-refinement-level 1
+;/define/overset-interfaces/adapt/set/maximum-refinement-level 1
+;/define/overset-interfaces/adapt/set/automatic? no
+;/define/overset-interfaces/adapt/set/mark-size? no
+;/define/overset-interfaces/adapt/set/mark-orphans? no
+;/define/overset-interfaces/adapt/set/mark-gaps? yes
+;/define/overset-interfaces/adapt/set/gap-resolution 5
+;/define/overset-interfaces/adapt/set/anisotropic? no
+;/define/overset-interfaces/adapt/set/mark-coarsening? no
+;/define/overset-interfaces/adapt/set/adaption-sweeps 1
+;/define/overset-interfaces/adapt/adapt-mesh
+
+
+; print date and mesh size
+!date
+/mesh/size-info
+/report/summary y "report.sum"
+(send_message "case_info_exported")
+(wait_message "thread_ids_written_to_file")
+/define/user-defined/execute-on-demand "get_thread_ids::post_process"
+/define/user-defined/execute-on-demand "store_coordinates_id::post_process"
+(send_message "nodes_stored")
+
+
+; set gap regions
+/define/gap-model/enable? yes
+(wait_message "gap_ids_written_to_file")
+(define source (open-input-file "gap_list.txt"))
+(define n_gaps (read source))
+(define gap_i "00")
+(define gap_j "00")
+(do ((k 1 (+ k 1))) ((> k n_gaps))
+    (set! gap_i (read source))
+    (set! gap_j (read source))
+    (ti-menu-load-string (format #f "/define/gap-model/create \"gap_~a_~a\" fiber_mantle_~a fiber_mantle_~a () ~a 1\n" gap_i gap_j gap_i gap_j gap-threshold))
+)
+(close-input-port source)
+/define/gap-model/advanced-options/render-gap-interface? yes
+/define/gap-model/advanced-options/verbosity 1
+/define/gap-model/advanced-options/expert? yes
+/define/gap-model/advanced-options/reduce-gap-regions? yes
+/define/gap-model/advanced-options/extend-gap-regions? yes 1 1
+/define/gap-model/advanced-options/fill-data-in-gap-regions? yes
+/define/gap-model/advanced-options/enhanced-data-interpolation? yes
+/define/gap-model/list-gap-regions
+
+
+; solution settings
+/define/models/solver/pressure-based yes
+/solve/set/expert no yes no no
+/solve/set/p-v-coupling 24
+/solve/set/p-v-controls 0.5 0.5
+/solve/set/gradient-scheme no yes
+/solve/set/discretization-scheme/density 0
+/solve/set/discretization-scheme/k 0
+/solve/set/discretization-scheme/omega 0
+/solve/set/discretization-scheme/temperature 0
+/solve/set/discretization-scheme/mom 0
+/solve/set/discretization-scheme/pressure 11
+/solve/set/flux-type no 0
+;/solve/set/pseudo-time-method/formulation 0
+/solve/set/pseudo-time-method/formulation 1
+;(ti-menu-load-string (format #f "/solve/set/pseudo-time-method/global-time-step-settings yes 2 ~a\n" length-scale))
+/solve/set/pseudo-time-method/global-time-step-settings yes 0 1
+/solve/set/warped-face-gradient-correction enable? yes no
+
+
+/solve/monitors/residual/convergence-criteria 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06
+/solve/monitors/residual/monitor? yes yes yes yes yes yes yes
+/solve/monitors/residual/plot? yes
+/solve/monitors/residual/print? yes
+/solve/report-definitions/add mass-in surface-massflowrate report-type surface-massflowrate surface-names inlet () average-over 1 per-surface? no quit
+/solve/report-definitions/add mass-out surface-massflowrate report-type surface-massflowrate surface-names outlet () average-over 1 per-surface? no quit
+(ti-menu-load-string (format #f "/solve/report-definitions/add axial-force force force-vector ~a average-over 1 thread-names ~a() per-zone? no quit \n" yarn-axis string-walls))
+(ti-menu-load-string (format #f "/solve/report-definitions/add lateral-force force force-vector ~a average-over 1 thread-names ~a() per-zone? no quit \n" rotation-axis string-walls))
+/solve/report-files/add report_steady active? yes file-name "./report-steady.out" frequency 1 frequency-of iteration itr-index "1" name "report_steady" print? yes report-defs mass-in mass-out axial-force lateral-force () run-index "0" write-instantaneous-values? yes quit
+
+
+; intialize case
+(ti-menu-load-string (format #f "/file/write-case ~a\n" case-name))
+/solve/initialize/compute-defaults/velocity-inlet inlet
+/solve/initialize/set-defaults/x-velocity 0
+/solve/initialize/set-defaults/y-velocity 0
+/solve/initialize/list-defaults
+!date
+/solve/initialize/initialize-flow
+!date
+;/file/auto-save/data-frequency 1
+;/file/auto-save/case-frequency if-case-is-modified
+
+
+; write case and data
+(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
+!date
+
+
+; solve case
+(ti-menu-load-string (format #f "/solve/set/number-of-iterations ~a\n" n-1sto-iter))
+(ti-menu-load-string (format #f "/solve/iterate ~a\n" n-1sto-iter))
+!date
+
+
+; write case and data
+(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
+!date
+
+
+; set to second order
+/solve/set/gradient-scheme no yes
+/solve/set/discretization-scheme/density 1
+/solve/set/discretization-scheme/k 1
+/solve/set/discretization-scheme/omega 1
+/solve/set/discretization-scheme/temperature 1
+/solve/set/discretization-scheme/mom 1
+/solve/set/discretization-scheme/pressure 12
+(ti-menu-load-string (format #f "/solve/set/number-of-iterations ~a\n" n-2ndo-iter))
+(ti-menu-load-string (format #f "/solve/iterate ~a\n" n-2ndo-iter))
+!date
+
+
+; write case and data
+(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
+!date
+
+
+; execute UDF functions for post-processing
+/define/user-defined/execute-on-demand "store_pressure_traction::post_process"
+(send_message "data_stored")
+
+
+; print time and exit
+!date
+/exit yes
