@@ -211,7 +211,6 @@ define/models/viscous/kw-sst yes
 /solve/set/under-relaxation/temperature 0.25
 /solve/set/under-relaxation/omega 0.5
 /solve/set/under-relaxation/k 0.5
-/solve/set/under-relaxation/pressure 0.25
 /solve/set/warped-face-gradient-correction enable? yes no
 
 
