@@ -164,7 +164,7 @@ class Analysis(Parameters):
                 outfile.write('\t(set! case-name-update (string-append case-name '
                               '(format  #f "_v~a" (list-ref v_array k))))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/boundary-conditions/velocity-inlet inlet no '
-                              'no yes yes no ~a no ~a no ~a no no yes ~a ~a\\n" (list-ref v_array k) '
+                              'no yes yes no ~a no ~a no ~a no yes ~a ~a\\n" (list-ref v_array k) '
                               'pressure-ambient temperature-ambient turb-intensity turb-length-scale))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-2ndo-iter))\n')
                 outfile.write('\t(system "date")\n')
