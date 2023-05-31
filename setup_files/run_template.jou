@@ -83,7 +83,7 @@ define/models/viscous/kw-sst yes
             )
         )
     )
-    (ti-menu-load-string (format #f "/mesh/modify-zones/append-mesh \"~a/meshes_coarse.cas.h5\"\n" mesh-directory))
+    (ti-menu-load-string (format #f "/mesh/modify-zones/append-mesh \"~a/meshes_combined.cas.h5\"\n" mesh-directory))
 )
 /parallel/partition/print-active-partitions
 
