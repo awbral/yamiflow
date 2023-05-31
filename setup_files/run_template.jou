@@ -235,8 +235,8 @@ define/models/viscous/kw-sst yes
 
 
 ; write case and data
-(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
-!date
+;(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
+;!date
 
 
 ; solve case
@@ -245,8 +245,8 @@ define/models/viscous/kw-sst yes
 !date
 
 
-; write case and data
-(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
+; write data
+(ti-menu-load-string (format #f "/file/write-data ~a\n" case-name-update))
 !date
 
 
@@ -263,8 +263,8 @@ define/models/viscous/kw-sst yes
 !date
 
 
-; write case and data
-(ti-menu-load-string (format #f "/file/write-case-data ~a\n" case-name-update))
+; write data
+(ti-menu-load-string (format #f "/file/write-data ~a\n" case-name-update))
 !date
 
 
