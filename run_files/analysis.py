@@ -142,7 +142,6 @@ class Analysis(Parameters):
                     line = line.replace('|YARN_AXIS|', f'{self.yarn_axis[0]:.5e} {self.yarn_axis[1]:.5e} '
                                                        f'{self.yarn_axis[2]:.5e}')
                     line = line.replace('|GAP|', f'{self.threshold:.2e}')
-                    line = line.replace('|LENGTH_SCALE|', f'{self.l_yarn:.5e}')
                     line = line.replace('|CASE|', self.case_file)
                     line = line.replace('|1STO|', str(self.n_it_1))
                     line = line.replace('|2NDO|', str(self.n_it_2))

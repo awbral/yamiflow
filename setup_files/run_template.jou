@@ -17,7 +17,6 @@
 (define rotation-axis "|ROT_AXIS|")
 (define yarn-axis "|YARN_AXIS|")
 (define gap-threshold |GAP|)
-(define length-scale |LENGTH_SCALE|)
 (define case-name "|CASE|")
 (define n-1sto-iter |1STO|)
 (define n-2ndo-iter |2NDO|)
@@ -203,10 +202,11 @@ define/models/viscous/kw-sst yes
 /solve/set/discretization-scheme/mom 0
 /solve/set/discretization-scheme/pressure 11
 /solve/set/flux-type no 0
-;/solve/set/pseudo-time-method/formulation 0
 /solve/set/pseudo-time-method/formulation 1
-;(ti-menu-load-string (format #f "/solve/set/pseudo-time-method/global-time-step-settings yes 2 ~a\n" length-scale))
 /solve/set/pseudo-time-method/global-time-step-settings yes 0 1
+/solve/set/pseudo-time-method/relaxation-factors/temperature 0.25
+/solve/set/pseudo-time-method/relaxation-factors/omega 0.5
+/solve/set/pseudo-time-method/relaxation-factors/k 0.5
 /solve/set/warped-face-gradient-correction enable? yes no
 
 
