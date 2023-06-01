@@ -35,10 +35,7 @@ class Analysis(Parameters):
         self.journal = self.parameters['journal']
         self.first_fiber = self.journal['first_fiber']
         self.last_fiber = self.journal['last_fiber']
-        if self.first_fiber == 0 and self.last_fiber == 63:
-            self.load_separately = self.journal['load_separately']
-        else:
-            self.load_separately = True
+        self.load_separately = self.journal['load_separately']
         self.v = int(self.journal['velocity_inlet'])
         self.p = self.journal['pressure_ambient']
         self.T = self.journal['temperature_ambient']
@@ -120,6 +117,8 @@ class Analysis(Parameters):
             n = n / norm_n
 
         # prepare journal script
+        if not (os.path.exists(join(self.mesh_dir, 'meshes_combined.cas.h5')) or self.load_separately):
+                self.load_separately = False
         load_separately = '#f'
         if self.load_separately:
             load_separately = '#t'
