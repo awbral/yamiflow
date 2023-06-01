@@ -39,6 +39,7 @@ class Analysis(Parameters):
         self.v = int(self.journal['velocity_inlet'])
         self.p = self.journal['pressure_ambient']
         self.T = self.journal['temperature_ambient']
+        self.rho = self.p / (287 * self.T)
         self.turb_intensity = self.journal['turbulent_intensity']
         self.turb_length_scale = self.journal['turbulent_length_scale']
         self.threshold = self.journal['gap_threshold']
@@ -122,6 +123,10 @@ class Analysis(Parameters):
         load_separately = '#f'
         if self.load_separately:
             load_separately = '#t'
+        mu = 1.7894e-05 # viscosity of air in Fluent
+        mu_t_over_v = self.rho * np.sqrt(3./2.) * self.turb_intensity * self.turb_length_scale * 0.09
+        mu_t = mu_t_over_v * self.v
+        turb_viscosity_ratio = mu_t/mu
         with open(join(self.dir_src, 'run_template.jou')) as infile:
             with open(join(self.w_dir, 'run.jou'), 'w') as outfile:
                 for line in infile:
@@ -134,7 +139,7 @@ class Analysis(Parameters):
                     line = line.replace('|P|', f'{self.p:.2f}')
                     line = line.replace('|T|', f'{self.T:.2f}')
                     line = line.replace('|I|', f'{self.turb_intensity:.2f}')
-                    line = line.replace('|MU_T|', f'{self.turb_length_scale:.5e}')
+                    line = line.replace('|MU_T|', f'{turb_viscosity_ratio:.5e}')
                     line = line.replace('|DZ|', f'{self.origin - self.l_yarn / 2:.5e}')
                     line = line.replace('|ROT_ANGLE|', f'{theta:.5e}')
                     line = line.replace('|ROT_AXIS|', f'{n[0]:.5e} {n[1]:.5e} {n[2]:.5e}')
@@ -157,14 +162,17 @@ class Analysis(Parameters):
                 outfile.write('\n\n')
                 outfile.write('; start velocity sweep loop\n')
                 outfile.write('(define v_array (list' + v_array_str + '))\n')
+                outfile.write(f'(define mu_t_over_v {mu_t_over_v:.5e})\n')
                 outfile.write('(do ((k 0 (+ k 1 ))) ((>= k (length v_array)))\n')
                 outfile.write("\t(rpsetvar 'udf/v (list-ref v_array k))\n")
                 outfile.write("\t(display (%rpgetvar 'udf/v))\n")
                 outfile.write('\t(set! case-name-update (string-append case-name '
                               '(format  #f "_v~a" (list-ref v_array k))))\n')
+                outfile.write(f'\t(set! turb-visc-ratio (* mu_t_over_v (list-ref v_array k)))\n')
+                outfile.write('\t(display turb-visc-ratio)\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/boundary-conditions/velocity-inlet inlet no '
-                              'no yes yes no ~a no ~a no ~a no yes ~a ~a\\n" (list-ref v_array k) '
-                              'pressure-ambient temperature-ambient turb-intensity turb-length-scale))\n')
+                              'no yes yes no ~a no ~a no ~a no no yes ~a ~a\\n" (list-ref v_array k) '
+                              'pressure-ambient temperature-ambient turb-intensity turb-visc-ratio))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-2ndo-iter))\n')
                 outfile.write('\t(system "date")\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/file/write-case-data ~a\\n" case-name-update))\n')
@@ -394,15 +402,14 @@ class Analysis(Parameters):
             print('Unit vector in drag direction: ', e_trans_drag)
             print('Unit vector in lift direction: ', e_trans_lift)
 
-            rho = self.p / (287 * self.T)
-            c_long = np.dot(tot_force, self.yarn_axis) * 2 / (rho * v ** 2 * 2 * self.r_yarn * np.pi)
+            c_long = np.dot(tot_force, self.yarn_axis) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn * np.pi)
             if c < 0:  # yarn_axis and velocity direction partly oppose each other --> revert sign of coefficient
                 c_long *= -1
-            c_trans_d = np.dot(tot_force, e_trans_drag) * 2 / (rho * v ** 2 * 2 * self.r_yarn)
-            c_trans_l = np.dot(tot_force, e_trans_lift) * 2 / (rho * v ** 2 * 2 * self.r_yarn)
-            c_m = self.moment * 2 / (rho * v ** 2 * np.pi * (2 * self.r_yarn) ** 2)
+            c_trans_d = np.dot(tot_force, e_trans_drag) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn)
+            c_trans_l = np.dot(tot_force, e_trans_lift) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn)
+            c_m = self.moment * 2 / (self.rho * v ** 2 * np.pi * (2 * self.r_yarn) ** 2)
             mu = 1.7894e-05
-            Re = v * (2 * self.r_yarn) * rho / mu
+            Re = v * (2 * self.r_yarn) * self.rho / mu
 
             coefficient_matrix[iteration, :] = np.array([Re, c_long, c_trans_d, c_trans_l, c_m])
         # ------------------------
