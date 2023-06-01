@@ -11,7 +11,7 @@
 (define pressure-ambient |P|)
 (define temperature-ambient |T|)
 (define turb-intensity |I|)
-(define turb-length-scale |L_T|)
+(define turb-visc-ratio |MU_T|)
 (define displ-z |DZ|)
 (define rotation-angle |ROT_ANGLE|)
 (define rotation-axis "|ROT_AXIS|")
@@ -50,6 +50,7 @@
 
 ; print date and mesh size
 (ti-menu-load-string (format #f "/file/read-case ~a\n" case-name))
+/solve/set/warped-face-gradient-correction enable? yes no
 !date
 /mesh/size-info
 
@@ -60,8 +61,8 @@
 /define/models/viscous/turb-compressibility? yes
 (rpsetvar 'kw-mt0 0.1)
 define/models/viscous/kw-sst yes
-(ti-menu-load-string (format #f "/define/boundary-conditions/velocity-inlet inlet no no yes yes no ~a no ~a no ~a no yes ~a ~a\n" velocity-inlet pressure-ambient temperature-ambient turb-intensity turb-length-scale))
-(ti-menu-load-string (format #f "/define/boundary-conditions/pressure-outlet outlet  yes no ~a no ~a no yes no no yes ~a ~a yes no no no\n" pressure-ambient temperature-ambient turb-intensity turb-length-scale))
+(ti-menu-load-string (format #f "/define/boundary-conditions/velocity-inlet inlet no no yes yes no ~a no ~a no ~a no no yes ~a ~a\n" velocity-inlet pressure-ambient temperature-ambient turb-intensity turb-visc-ratio))
+(ti-menu-load-string (format #f "/define/boundary-conditions/pressure-outlet outlet  yes no ~a no ~a no yes no no yes ~a ~a yes no no no\n" pressure-ambient temperature-ambient turb-intensity turb-visc-ratio))
 /define/operating-conditions/operating-pressure 0
 
 
@@ -202,16 +203,12 @@ define/models/viscous/kw-sst yes
 /solve/set/discretization-scheme/mom 0
 /solve/set/discretization-scheme/pressure 11
 /solve/set/flux-type no 0
-;/solve/set/pseudo-time-method/formulation 1
-;/solve/set/pseudo-time-method/global-time-step-settings yes 0 1
-;/solve/set/pseudo-time-method/relaxation-factors/temperature 0.25
-;/solve/set/pseudo-time-method/relaxation-factors/omega 0.5
-;/solve/set/pseudo-time-method/relaxation-factors/k 0.5
-/solve/set/pseudo-time-method/formulation 0
-/solve/set/under-relaxation/temperature 0.25
-/solve/set/under-relaxation/omega 0.5
-/solve/set/under-relaxation/k 0.5
-/solve/set/warped-face-gradient-correction enable? yes no
+/solve/set/limits _ _ _ _ _ _ 1e10
+/solve/set/pseudo-time-method/formulation 1
+/solve/set/pseudo-time-method/global-time-step-settings yes 0 1
+/solve/set/pseudo-time-method/relaxation-factors/temperature 0.25
+/solve/set/pseudo-time-method/relaxation-factors/omega 0.5
+/solve/set/pseudo-time-method/relaxation-factors/k 0.5
 
 
 /solve/monitors/residual/convergence-criteria 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06

@@ -134,7 +134,7 @@ class Analysis(Parameters):
                     line = line.replace('|P|', f'{self.p:.2f}')
                     line = line.replace('|T|', f'{self.T:.2f}')
                     line = line.replace('|I|', f'{self.turb_intensity:.2f}')
-                    line = line.replace('|L_T|', f'{self.turb_length_scale:.5e}')
+                    line = line.replace('|MU_T|', f'{self.turb_length_scale:.5e}')
                     line = line.replace('|DZ|', f'{self.origin - self.l_yarn / 2:.5e}')
                     line = line.replace('|ROT_ANGLE|', f'{theta:.5e}')
                     line = line.replace('|ROT_AXIS|', f'{n[0]:.5e} {n[1]:.5e} {n[2]:.5e}')
