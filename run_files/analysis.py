@@ -124,7 +124,7 @@ class Analysis(Parameters):
         if self.load_separately:
             load_separately = '#t'
         mu = 1.7894e-05 # viscosity of air in Fluent
-        mu_t_over_v = self.rho * np.sqrt(3./2.) * self.turb_intensity * self.turb_length_scale * 0.09
+        mu_t_over_v = self.rho * np.sqrt(3./2.) * self.turb_intensity / 100. * self.turb_length_scale * 0.09
         mu_t = mu_t_over_v * self.v
         turb_viscosity_ratio = mu_t/mu
         with open(join(self.dir_src, 'run_template.jou')) as infile:
