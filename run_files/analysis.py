@@ -119,7 +119,7 @@ class Analysis(Parameters):
 
         # prepare journal script
         if not (os.path.exists(join(self.mesh_dir, 'meshes_combined.cas.h5')) or self.load_separately):
-                self.load_separately = False
+                self.load_separately = True
         load_separately = '#f'
         if self.load_separately:
             load_separately = '#t'
