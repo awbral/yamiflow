@@ -168,7 +168,7 @@ class Analysis(Parameters):
                 outfile.write("\t(display (%rpgetvar 'udf/v))\n")
                 outfile.write('\t(set! case-name-update (string-append case-name '
                               '(format  #f "_v~a" (list-ref v_array k))))\n')
-                outfile.write(f'\t(set! turb-visc-ratio (* mu_t_over_v (list-ref v_array k)))\n')
+                outfile.write(f'\t(set! turb-visc-ratio (/ (* mu_t_over_v (list-ref v_array k)) {mu:.5e})\n')
                 outfile.write('\t(display turb-visc-ratio)\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/boundary-conditions/velocity-inlet inlet no '
                               'no yes yes no ~a no ~a no ~a no no yes ~a ~a\\n" (list-ref v_array k) '
