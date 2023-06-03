@@ -140,7 +140,7 @@ class Analysis(Parameters):
                     line = line.replace('|T|', f'{self.T:.2f}')
                     line = line.replace('|I|', f'{self.turb_intensity:.2f}')
                     line = line.replace('|MU_T|', f'{turb_viscosity_ratio:.5e}')
-                    line = line.replace('|DZ|', f'{self.origin - self.l_yarn / 2:.5e}')
+                    line = line.replace('|DZ|', f'{-self.origin - self.l_yarn / 2:.5e}')
                     line = line.replace('|ROT_ANGLE|', f'{theta:.5e}')
                     line = line.replace('|ROT_AXIS|', f'{n[0]:.5e} {n[1]:.5e} {n[2]:.5e}')
                     line = line.replace('|YARN_AXIS|', f'{self.yarn_axis[0]:.5e} {self.yarn_axis[1]:.5e} '
