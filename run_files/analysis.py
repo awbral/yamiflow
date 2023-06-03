@@ -175,7 +175,7 @@ class Analysis(Parameters):
                               'pressure-ambient temperature-ambient turb-intensity turb-visc-ratio))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-2ndo-iter))\n')
                 outfile.write('\t(system "date")\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/file/write-case-data ~a\\n" case-name-update))\n')
+                outfile.write('\t(ti-menu-load-string (format #f "/file/write-data ~a\\n" case-name-update))\n')
                 outfile.write('\t(system "date")\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/user-defined/execute-on-demand '
                               '\\"store_pressure_traction::post_process\\"\\n"))\n')
