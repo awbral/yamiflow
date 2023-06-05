@@ -119,14 +119,14 @@ class Analysis(Parameters):
 
         # prepare journal script
         if not (os.path.exists(join(self.mesh_dir, 'meshes_combined.cas.h5')) or self.load_separately):
-                self.load_separately = True
+            self.load_separately = True
         load_separately = '#f'
         if self.load_separately:
             load_separately = '#t'
-        mu = 1.7894e-05 # viscosity of air in Fluent
-        mu_t_over_v = self.rho * np.sqrt(3./2.) * self.turb_intensity / 100. * self.turb_length_scale * 0.09
+        mu = 1.7894e-05  # viscosity of air in Fluent
+        mu_t_over_v = self.rho * np.sqrt(3. / 2.) * self.turb_intensity / 100. * self.turb_length_scale * 0.09
         mu_t = mu_t_over_v * self.v
-        turb_viscosity_ratio = mu_t/mu
+        turb_viscosity_ratio = mu_t / mu
         with open(join(self.dir_src, 'run_template.jou')) as infile:
             with open(join(self.w_dir, 'run.jou'), 'w') as outfile:
                 for line in infile:
@@ -328,8 +328,9 @@ class Analysis(Parameters):
 
         force_matrix = np.zeros((velocity_array.shape[0], 3 * self.dimensions + 2))
         coefficient_matrix = np.zeros((velocity_array.shape[0], self.dimensions + 2))
-        cutoff = 0  # ignore first 20 %
-        yarn_start = (-self.yarn_axis / 2 + cutoff) * self.l_yarn
+        cutoff = 0.2  # ignore first and last 20 %
+        yarn_start = (- 1 / 2 + cutoff) * self.l_yarn * self.yarn_axis
+        yarn_end = (1 / 2 - cutoff) * self.l_yarn * self.yarn_axis
 
         for iteration in range(velocity_array.shape[0]):
             self.p_force = np.zeros(self.dimensions)
@@ -349,7 +350,10 @@ class Analysis(Parameters):
                     data = self.interpolate_data(data, epsilon)
                 yarn_start_array = np.repeat(yarn_start.reshape(1, -1), data.shape[0], axis=0)
                 is_past_start = np.dot(data[:, :3] - yarn_start_array, self.yarn_axis) >= 0
-                data = data[is_past_start]
+                yarn_end_array = np.repeat(yarn_end.reshape(1, -1), data.shape[0], axis=0)
+                is_before_end = np.dot(yarn_end_array - data[:, :3], self.yarn_axis) >= 0
+                data_filter = is_past_start * is_before_end
+                data = data[data_filter]
                 fp = np.zeros((data.shape[0], self.dimensions))
                 ft = np.zeros((data.shape[0], self.dimensions))
                 for j in range(self.dimensions):
