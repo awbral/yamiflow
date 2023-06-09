@@ -328,7 +328,7 @@ class Analysis(Parameters):
 
         force_matrix = np.zeros((velocity_array.shape[0], 3 * self.dimensions + 2))
         coefficient_matrix = np.zeros((velocity_array.shape[0], self.dimensions + 2))
-        cutoff = 0.2  # ignore first and last 20 %
+        cutoff = 2.5 * self.r_yarn / self.l_yarn  # ignore first and last 2.5 x yarn radii (relative to yarn length)
         yarn_start = (- 1 / 2 + cutoff) * self.l_yarn * self.yarn_axis
         yarn_end = (1 / 2 - cutoff) * self.l_yarn * self.yarn_axis
 
