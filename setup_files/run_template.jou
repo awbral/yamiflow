@@ -157,6 +157,7 @@ define/models/viscous/kw-sst yes
 
 ; solution settings
 /define/materials/list-properties air
+/define/materials/change-create air air yes ideal-gas no no no no no no
 /define/models/solver/pressure-based yes
 /solve/set/expert no yes no no
 /solve/set/p-v-coupling 24
@@ -172,6 +173,7 @@ define/models/viscous/kw-sst yes
 /solve/set/limits _ _ _ _ _ _ 1e10
 /solve/set/pseudo-time-method/formulation 1
 /solve/set/pseudo-time-method/global-time-step-settings yes 0 1
+/define/materials/list-properties air
 
 
 /solve/monitors/residual/convergence-criteria 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06 1e-06
