@@ -38,9 +38,8 @@
 	(ti-menu-load-string (format #f "/display/set/picture/driver png \n"))
 	(ti-menu-load-string (format #f "/display/set/picture/use-window-resolution? no \n"))
 	(ti-menu-load-string (format #f "/display/set/picture/set-standard-resolution \"2K QHD (2560x1440)\" \n"))
-    	(ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \n"))
-   	(ti-menu-load-string (format #f "/display/save-picture residuals \n"))
-    	(ti-menu-load-string (format #f "/display/save-picture snapshots/residuals \n"))
+    (ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \n"))
+    (ti-menu-load-string (format #f "/display/save-picture snapshots/residuals \n"))
 	(ti-menu-load-string (format #f "/display/save-picture snapshots/v~a/residuals \n" (list-ref v_array k)))
 
 	(ti-menu-load-string (format #f "/define/custom-field-functions/define \"vel-mag-xy-rel\" (sqrt((x_velocity^2+y_velocity^2)))/~a \n" (list-ref v_array k)))

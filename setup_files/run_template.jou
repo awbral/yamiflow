@@ -236,6 +236,15 @@ define/models/viscous/kw-sst yes
 /define/user-defined/execute-on-demand "store_pressure_traction::post_process"
 (send_message "data_stored")
 
+; plot residuals
+/display/set/windows/logo? no
+/preferences/appearance/graphics-foreground-color 0 0 0
+/display/set/picture/driver png
+display/set/picture/use-window-resolution? no
+/display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
+/plot/residuals yes yes yes yes yes yes yes
+display/save-picture residuals
+
 
 ; print time and exit
 !date
