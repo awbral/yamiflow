@@ -179,6 +179,9 @@ class Analysis(Parameters):
                 outfile.write('\t(system "date")\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/user-defined/execute-on-demand '
                               '\\"store_pressure_traction::post_process\\"\\n"))\n')
+                outfile.write('\t(ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \n")) \n')
+                outfile.write('\t(ti-menu-load-string (format #f "/display/save-picture residuals_v~a \n" '
+                              '(list-ref v_array k))) \n')
                 outfile.write(')\n')
                 outfile.write('(send_message "data_stored")\n')
                 outfile.write('\n\n')

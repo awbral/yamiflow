@@ -170,7 +170,7 @@ define/models/viscous/kw-sst yes
 /solve/set/discretization-scheme/mom 0
 /solve/set/discretization-scheme/pressure 11
 /solve/set/flux-type no 0
-/solve/set/limits _ _ _ _ _ _ 1e10
+/solve/set/limits _ _ _ _ -1 _ 1e10
 /solve/set/pseudo-time-method/formulation 1
 /solve/set/pseudo-time-method/global-time-step-settings yes 0 1
 /define/materials/list-properties air
@@ -240,10 +240,10 @@ define/models/viscous/kw-sst yes
 /display/set/windows/logo? no
 /preferences/appearance/graphics-foreground-color 0 0 0
 /display/set/picture/driver png
-display/set/picture/use-window-resolution? no
+/display/set/picture/use-window-resolution? no
 /display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
 /plot/residuals yes yes yes yes yes yes yes
-display/save-picture residuals
+/display/save-picture residuals
 
 
 ; print time and exit
