@@ -170,9 +170,10 @@ define/models/viscous/kw-sst yes
 /solve/set/discretization-scheme/mom 0
 /solve/set/discretization-scheme/pressure 11
 /solve/set/flux-type no 0
-/solve/set/limits _ _ _ _ -1 _ 1e10
+/solve/set/limits _ _ _ _ _ _ 1e10
 /solve/set/pseudo-time-method/formulation 1
-/solve/set/pseudo-time-method/global-time-step-settings yes 0 1
+/solve/set/pseudo-time-method/global-time-step-settings yes 1 1
+;/solve/set/pseudo-time-method/relaxation-factors/k 0.5
 /define/materials/list-properties air
 
 
