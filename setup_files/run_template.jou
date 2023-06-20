@@ -172,7 +172,7 @@ define/models/viscous/kw-sst yes
 /solve/set/flux-type no 0
 /solve/set/limits _ _ _ _ _ _ 1e10
 /solve/set/pseudo-time-method/formulation 1
-/solve/set/pseudo-time-method/global-time-step-settings yes 1 1
+/solve/set/pseudo-time-method/global-time-step-settings yes 0 1
 ;/solve/set/pseudo-time-method/relaxation-factors/k 0.5
 /define/materials/list-properties air
 
@@ -194,6 +194,8 @@ define/models/viscous/kw-sst yes
 /solve/initialize/set-defaults/x-velocity 0
 /solve/initialize/set-defaults/y-velocity 0
 /solve/initialize/set-defaults/z-velocity 0
+/solve/initialize/set-defaults/k 1
+/solve/initialize/set-defaults/omega 1
 /solve/initialize/list-defaults
 !date
 /solve/initialize/initialize-flow
@@ -213,6 +215,16 @@ define/models/viscous/kw-sst yes
 ; write data
 (ti-menu-load-string (format #f "/file/write-data ~a\n" case-name-update))
 !date
+
+
+; plot residuals
+/display/set/windows/logo? no
+/preferences/appearance/graphics-foreground-color 0 0 0
+/display/set/picture/driver png
+/display/set/picture/use-window-resolution? no
+/display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
+/plot/residuals yes yes yes yes yes yes yes
+(ti-menu-load-string (format #f "/display/save-picture residuals_~a_1stO \n" velocity-inlet))
 
 
 ; set to second order
@@ -244,8 +256,7 @@ define/models/viscous/kw-sst yes
 /display/set/picture/use-window-resolution? no
 /display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
 /plot/residuals yes yes yes yes yes yes yes
-/display/save-picture residuals
-
+(ti-menu-load-string (format #f "/display/save-picture residuals_~a_2ndO \n" velocity-inlet))
 
 
 ; print time and exit
