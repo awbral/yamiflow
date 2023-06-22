@@ -229,8 +229,8 @@ define/models/viscous/kw-sst yes
 ; set to second order
 /solve/set/gradient-scheme no yes
 /solve/set/discretization-scheme/density 1
-/solve/set/discretization-scheme/k 1
-/solve/set/discretization-scheme/omega 1
+;/solve/set/discretization-scheme/k 1
+;/solve/set/discretization-scheme/omega 1
 /solve/set/discretization-scheme/temperature 1
 /solve/set/discretization-scheme/mom 1
 /solve/set/discretization-scheme/pressure 12
@@ -244,10 +244,6 @@ define/models/viscous/kw-sst yes
 !date
 
 
-; execute UDF functions for post-processing
-/define/user-defined/execute-on-demand "store_pressure_traction::post_process"
-(send_message "data_stored")
-
 ; plot residuals
 /display/set/windows/logo? no
 /preferences/appearance/graphics-foreground-color 0 0 0
@@ -256,6 +252,11 @@ define/models/viscous/kw-sst yes
 /display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
 /plot/residuals yes yes yes yes yes yes yes
 (ti-menu-load-string (format #f "/display/save-picture residuals_~a_2ndO \n" velocity-inlet))
+
+
+; execute UDF functions for post-processing
+/define/user-defined/execute-on-demand "store_pressure_traction::post_process"
+(send_message "data_stored")
 
 
 ; print time and exit

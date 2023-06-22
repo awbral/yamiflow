@@ -156,7 +156,7 @@ class Analysis(Parameters):
         if self.v_sweep:
             for i in range(1, self.velocity_array.shape[0]):
                 v_array_str += f' {self.velocity_array[i]}'
-            subprocess.run('head -n-5 run.jou > run_adapted.jou; rm run.jou; mv run_adapted.jou run.jou',
+            subprocess.run('head -n-6 run.jou > run_adapted.jou; rm run.jou; mv run_adapted.jou run.jou',
                            executable='/bin/bash', shell=True, cwd=self.w_dir, env=None)
             with open(join(self.w_dir, 'run.jou'), 'a') as outfile:
                 outfile.write('\n\n')
@@ -181,8 +181,8 @@ class Analysis(Parameters):
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 11 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-1sto-iter))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/density 1 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
+                # outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
+                # outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 1 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/mom 1 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 12 \\n"))\n')
