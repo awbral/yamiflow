@@ -173,7 +173,6 @@ define/models/viscous/kw-sst yes
 /solve/set/limits _ _ _ _ _ _ 1e10
 /solve/set/pseudo-time-method/formulation 1
 /solve/set/pseudo-time-method/global-time-step-settings yes 0 1
-/solve/set/previous-defaults/undo-2019r1-default-changes? yes no no
 /define/materials/list-properties air
 
 
