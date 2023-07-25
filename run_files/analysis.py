@@ -176,16 +176,20 @@ class Analysis(Parameters):
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/density 0 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 0 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 0 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 0 \\n"))\n')
+                outfile.write(
+                    '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 0 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/mom 0 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 11 \\n"))\n')
+                outfile.write(
+                    '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 11 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-1sto-iter))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/density 1 \\n"))\n')
-                # outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
-                # outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 1 \\n"))\n')
+                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
+                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
+                outfile.write(
+                    '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 1 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/mom 1 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 12 \\n"))\n')
+                outfile.write(
+                    '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 12 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-2ndo-iter))\n')
                 outfile.write('\t(system "date")\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/file/write-data ~a\\n" case-name-update))\n')
@@ -368,7 +372,8 @@ class Analysis(Parameters):
                 is_past_start = np.dot(data[:, :3] - yarn_start_array, self.yarn_axis) >= 0
                 yarn_end_array = np.repeat(yarn_end.reshape(1, -1), data.shape[0], axis=0)
                 is_before_end = np.dot(yarn_end_array - data[:, :3], self.yarn_axis) >= 0
-                data_filter = is_past_start * is_before_end
+                # is_core = np.sqrt(data[:, 0] ** 2 + data[:, 1] ** 2) <= 160e-6
+                data_filter = is_past_start * is_before_end #* is_core
                 data = data[data_filter]
                 fp = np.zeros((data.shape[0], self.dimensions))
                 ft = np.zeros((data.shape[0], self.dimensions))

@@ -184,9 +184,11 @@ define/models/viscous/kw-sst yes
 /solve/report-definitions/add mass-out surface-massflowrate report-type surface-massflowrate surface-names outlet () average-over 1 per-surface? no quit
 (ti-menu-load-string (format #f "/solve/report-definitions/add axial-force force force-vector ~a average-over 1 thread-names ~a() per-zone? no quit \n" yarn-axis string-walls))
 (ti-menu-load-string (format #f "/solve/report-definitions/add lateral-force force force-vector ~a average-over 1 thread-names ~a() per-zone? no quit \n" rotation-axis string-walls))
-/solve/report-files/add report_steady active? yes file-name "./report-steady.out" frequency 1 frequency-of iteration itr-index "1" name "report_steady" print? yes report-defs mass-in mass-out axial-force lateral-force () run-index "0" write-instantaneous-values? yes quit
+(ti-menu-load-string (format #f "/solve/report-definitions/add z-force force force-vector 0 0 1 average-over 1 thread-names ~a() per-zone? no quit \n" string-walls))
+/solve/report-files/add report_steady active? yes file-name "./report-steady.out" frequency 1 frequency-of iteration itr-index "1" name "report_steady" print? yes report-defs mass-in mass-out axial-force lateral-force z-force () run-index "0" write-instantaneous-values? yes quit
 /solve/monitors/convergence/add-edit "axial-force" 1e-6 50 1 yes no
 /solve/monitors/convergence/add-edit "lateral-force" 1e-6 50 1 yes no
+/solve/monitors/convergence/add-edit "z-force" 1e-6 50 1 yes no
 
 
 ; intialize case
@@ -195,7 +197,6 @@ define/models/viscous/kw-sst yes
 /solve/initialize/set-defaults/x-velocity 0
 /solve/initialize/set-defaults/y-velocity 0
 /solve/initialize/set-defaults/z-velocity 0
-/solve/initialize/set-defaults/k 0
 /solve/initialize/list-defaults
 !date
 /solve/initialize/initialize-flow
@@ -230,8 +231,8 @@ define/models/viscous/kw-sst yes
 ; set to second order
 /solve/set/gradient-scheme no yes
 /solve/set/discretization-scheme/density 1
-;/solve/set/discretization-scheme/k 1
-;/solve/set/discretization-scheme/omega 1
+/solve/set/discretization-scheme/k 1
+/solve/set/discretization-scheme/omega 1
 /solve/set/discretization-scheme/temperature 1
 /solve/set/discretization-scheme/mom 1
 /solve/set/discretization-scheme/pressure 12
