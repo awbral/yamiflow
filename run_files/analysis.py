@@ -138,7 +138,7 @@ class Analysis(Parameters):
                     line = line.replace('|LAST_FIBER|', str(self.last_fiber))
                     line = line.replace('|YARN_LENGTH|', f'{self.l_yarn:.5e}')
                     line = line.replace('|LOAD_SEPARATELY|', load_separately)
-                    line = line.replace('|WRITE_DATA|', write_data)
+                    line = line.replace('|SAVE_DATA|', write_data)
                     line = line.replace('|MESH_DIR|', self.mesh_dir)
                     line = line.replace('|V|', f'{self.v}')
                     line = line.replace('|P|', f'{self.p:.2f}')
