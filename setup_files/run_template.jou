@@ -20,6 +20,7 @@
 (define case-name "|CASE|")
 (define n-1sto-iter |1STO|)
 (define n-2ndo-iter |2NDO|)
+(define save-data |SAVE_DATA|)
 
 (rp-var-define 'udf/v velocity-inlet 'int #f)
 (display (%rpgetvar 'udf/v))
@@ -38,6 +39,14 @@
                 (system (string-append "rm " message ".fiber"))
             )
             (system "sleep 0.1")
+        )
+    )
+)
+(define (write_data)
+    (if save-data
+        (begin
+            (ti-menu-load-string (format #f "/file/write-data ~a\n" case-name-update))
+            (system "date")
         )
     )
 )
@@ -186,9 +195,9 @@ define/models/viscous/kw-sst yes
 (ti-menu-load-string (format #f "/solve/report-definitions/add lateral-force force force-vector ~a average-over 1 thread-names ~a() per-zone? no quit \n" rotation-axis string-walls))
 (ti-menu-load-string (format #f "/solve/report-definitions/add z-force force force-vector 0 0 1 average-over 1 thread-names ~a() per-zone? no quit \n" string-walls))
 /solve/report-files/add report_steady active? yes file-name "./report-steady.out" frequency 1 frequency-of iteration itr-index "1" name "report_steady" print? yes report-defs mass-in mass-out axial-force lateral-force z-force () run-index "0" write-instantaneous-values? yes quit
-/solve/monitors/convergence/add-edit "axial-force" 1e-6 0 1 yes no
-/solve/monitors/convergence/add-edit "lateral-force" 1e-6 0 1 yes no
-/solve/monitors/convergence/add-edit "z-force" 1e-6 0 1 yes no
+/solve/monitors/convergence/add-edit "axial-force" 1e-5 0 1 yes no
+/solve/monitors/convergence/add-edit "lateral-force" 1e-5 0 1 yes no
+/solve/monitors/convergence/add-edit "z-force" 1e-5 0 1 yes no
 
 
 ; intialize case
@@ -214,8 +223,7 @@ define/models/viscous/kw-sst yes
 
 
 ; write data
-(ti-menu-load-string (format #f "/file/write-data ~a\n" case-name-update))
-!date
+(write_data)
 
 
 ; plot residuals
@@ -225,7 +233,7 @@ define/models/viscous/kw-sst yes
 /display/set/picture/use-window-resolution? no
 /display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
 /plot/residuals yes yes yes yes yes yes yes
-(ti-menu-load-string (format #f "/display/save-picture residuals_~a_1stO \n" velocity-inlet))
+(ti-menu-load-string (format #f "/display/save-picture residuals_v~a_1stO \n" velocity-inlet))
 
 
 ; set to second order
@@ -242,8 +250,7 @@ define/models/viscous/kw-sst yes
 
 
 ; write data
-(ti-menu-load-string (format #f "/file/write-data ~a\n" case-name-update))
-!date
+(write_data)
 
 
 ; plot residuals
@@ -253,7 +260,7 @@ define/models/viscous/kw-sst yes
 /display/set/picture/use-window-resolution? no
 /display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
 /plot/residuals yes yes yes yes yes yes yes
-(ti-menu-load-string (format #f "/display/save-picture residuals_~a_2ndO \n" velocity-inlet))
+(ti-menu-load-string (format #f "/display/save-picture residuals_v~a_2ndO \n" velocity-inlet))
 
 
 ; execute UDF functions for post-processing

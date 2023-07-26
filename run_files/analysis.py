@@ -45,6 +45,7 @@ class Analysis(Parameters):
         self.threshold = self.journal['gap_threshold']
         self.n_it_1 = self.journal['n_1sto_iter']
         self.n_it_2 = self.journal['n_2ndo_iter']
+        self.write_data = self.journal['write_data']
 
         self.post = self.parameters['post_processing']
         self.write_vtk = self.post['write_vtk']
@@ -123,6 +124,9 @@ class Analysis(Parameters):
         load_separately = '#f'
         if self.load_separately:
             load_separately = '#t'
+        write_data = '#f'
+        if self.write_data:
+            write_data = '#t'
         mu = 1.7894e-05  # viscosity of air in Fluent
         mu_t_over_v = self.rho * np.sqrt(3. / 2.) * self.turb_intensity / 100. * self.turb_length_scale * 0.09
         mu_t = mu_t_over_v * self.v
@@ -134,6 +138,7 @@ class Analysis(Parameters):
                     line = line.replace('|LAST_FIBER|', str(self.last_fiber))
                     line = line.replace('|YARN_LENGTH|', f'{self.l_yarn:.5e}')
                     line = line.replace('|LOAD_SEPARATELY|', load_separately)
+                    line = line.replace('|WRITE_DATA|', write_data)
                     line = line.replace('|MESH_DIR|', self.mesh_dir)
                     line = line.replace('|V|', f'{self.v}')
                     line = line.replace('|P|', f'{self.p:.2f}')
@@ -192,8 +197,7 @@ class Analysis(Parameters):
                     '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 12 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-2ndo-iter))\n')
                 outfile.write('\t(system "date")\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/file/write-data ~a\\n" case-name-update))\n')
-                outfile.write('\t(system "date")\n')
+                outfile.write('\t(write_data)\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/user-defined/execute-on-demand '
                               '\\"store_pressure_traction::post_process\\"\\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \n")) \n')
