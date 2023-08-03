@@ -239,8 +239,8 @@ define/models/viscous/kw-sst yes
 ; set to second order
 /solve/set/gradient-scheme no yes
 /solve/set/discretization-scheme/density 1
-/solve/set/discretization-scheme/k 1
-/solve/set/discretization-scheme/omega 1
+;/solve/set/discretization-scheme/k 1
+;/solve/set/discretization-scheme/omega 1
 /solve/set/discretization-scheme/temperature 1
 /solve/set/discretization-scheme/mom 1
 /solve/set/discretization-scheme/pressure 12
