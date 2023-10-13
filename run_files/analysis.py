@@ -188,8 +188,8 @@ class Analysis(Parameters):
                     '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 11 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-1sto-iter))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/density 1 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
+#                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
+#                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
                 outfile.write(
                     '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 1 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/mom 1 \\n"))\n')
