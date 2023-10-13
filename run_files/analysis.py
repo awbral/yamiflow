@@ -233,6 +233,9 @@ class Analysis(Parameters):
         with open(join(self.dir_src, 'save_pictures_template.jou')) as infile:
             with open(join(self.w_dir, 'save_pictures.jou'), 'w') as outfile:
                 for line in infile:
+                    line = line.replace('|CASE|', self.case_file)
+                    line = line.replace('|FIRST_FIBER|', str(self.first_fiber))
+                    line = line.replace('|LAST_FIBER|', str(self.last_fiber))
                     line = line.replace('|YARN_LENGTH|', f'{self.l_yarn:.5e}')
                     line = line.replace('|YARN_RADIUS|', f'{self.r_yarn:.5e}')
                     line = line.replace('|ROT_ANGLE|', f'{theta:.5e}')
@@ -505,7 +508,7 @@ class Analysis(Parameters):
         """
         node_ids = data[index, -self.mnpf:]
         mask = np.isin(data[:, -self.mnpf:], node_ids).astype(int)
-        for k in range(self.mnpf - 1):  # neighbouring faces have between 0 and n-1 nodes in common
+        for k in range(self.mnpf - 1):  # neighbouring faces have between 1 and n-1 nodes in common
             queue.extend(np.asarray(np.sum(mask, axis=1) == (k + 1)).nonzero()[0].tolist())
         return
 

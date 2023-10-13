@@ -1,4 +1,6 @@
 (define case-name "|CASE|")
+(define first-fiber |FIRST_FIBER|)
+(define last-fiber |LAST_FIBER|)
 (define yarn-radius |YARN_RADIUS|)
 (define yarn-length |YARN_LENGTH|)
 (define rotation-angle -|ROT_ANGLE|)
@@ -9,8 +11,6 @@
 (define case-name-update case-name)
 
 /file/set-batch-options n n n
-/file/async-optimize? yes
-/file/cffio-options/io-mode 4
 /display/set/windows/logo? no
 /display/views/camera/projection orthographic
 /display/views/camera/target 0 0 0
@@ -21,12 +21,32 @@
 /display/set/picture/driver png
 /display/set/picture/use-window-resolution? no
 /display/set/picture/set-standard-resolution "2K QHD (2560x1440)"
+/preferences/graphics/colormap-settings/show-colormap yes
+/preferences/graphics/colormap-settings/alignment "Left"
+/preferences/graphics/colormap-settings/number-format-type "float"
+/preferences/graphics/colormap-settings/number-format-precision 1
+
 !mkdir snapshots
+
+
+(define string-walls "")
+(do ((k first-fiber (+ k 1))) ((> k last-fiber))
+	(if (< k 10)
+		(begin
+			(set! string-walls (string-append string-walls (format #f "fiber_head_0~a fiber_mantle_0~a fiber_tail_0~a " k k k)))
+		)
+		(begin
+            		(set! string-walls (string-append string-walls (format #f "fiber_head_~a fiber_mantle_~a fiber_tail_~a " k k k)))
+		)
+	)
+)
+
+(ti-menu-load-string (format #f "/file/read-case ~a\n" case-name))
 
 ; start velocity sweep loop
 (do ((k 0 (+ k 1 ))) ((>= k (length v_array)))
 	(set! case-name-update (string-append case-name (format  #f "_v~a" (list-ref v_array k))))
-	(ti-menu-load-string (format #f "/file/read-case-data ~a\n" case-name-update))
+	(ti-menu-load-string (format #f "/file/read-data ~a\n" case-name-update))
 	(system (format #f "mkdir snapshots/v~a \n" (list-ref v_array k)))
 
 	; rotate zones: pictures in yarn reference frame
@@ -38,20 +58,24 @@
 	(ti-menu-load-string (format #f "/display/set/picture/driver png \n"))
 	(ti-menu-load-string (format #f "/display/set/picture/use-window-resolution? no \n"))
 	(ti-menu-load-string (format #f "/display/set/picture/set-standard-resolution \"2K QHD (2560x1440)\" \n"))
-    (ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \n"))
-    (ti-menu-load-string (format #f "/display/save-picture snapshots/residuals \n"))
-	(ti-menu-load-string (format #f "/display/save-picture snapshots/v~a/residuals \n" (list-ref v_array k)))
-
+	(ti-menu-load-string (format #f "/display/surface-mesh ~a () \n" string-walls))
+	(ti-menu-load-string (format #f "/display/views/camera/target 0 0 0 \n"))
+	(ti-menu-load-string (format #f "/display/views/camera/position 1 1 1 \n"))
+	(ti-menu-load-string (format #f "/display/views/camera/up-vector 0 1 0 \n"))
+	(ti-menu-load-string (format #f "/display/views/camera/field (* ~a 15) (* ~a 15) \n" yarn-radius yarn-radius))
+	(ti-menu-load-string (format #f "/display/save-picture ./snapshots/geometry-base \n"))
+	
 	(ti-menu-load-string (format #f "/define/custom-field-functions/define \"vel-mag-xy-rel\" (sqrt((x_velocity^2+y_velocity^2)))/~a \n" (list-ref v_array k)))
-	(do ((j 0 (+ j 1))) ((> j 25))
+	(do ((j 0 (+ j 1))) ((> j 50))
 		(ti-menu-load-string (format #f "/preferences/appearance/graphics-foreground-color 0 0 0 \n"))
 		(ti-menu-load-string (format #f "/display/set/picture/driver png \n"))
 		(ti-menu-load-string (format #f "/display/set/picture/use-window-resolution? no \n"))
 		(ti-menu-load-string (format #f "/display/set/picture/set-standard-resolution \"2K QHD (2560x1440)\" \n"))
+                (ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/show-colormap yes \n"))
 		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/alignment \"Left\" \n"))
-		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-type \"float\" \n"))
-		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-precision 1 \n"))
-		(ti-menu-load-string (format #f "/surface/plane-surface xy-~a xy-plane (- ~a (* ~a (/ ~a 25))) \n" j surface-start j surface-start))
+                (ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-type \"float\" \n"))
+                (ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-precision 1 \n"))
+		(ti-menu-load-string (format #f "/surface/plane-surface xy-~a xy-plane (+ ~a (* ~a (/ ~a 50))) \n" j surface-start j yarn-length))
 		(ti-menu-load-string (format #f "/display/objects/create contour velocity_xy-~a field velocity-magnitude range-option auto-range-on global-range? yes q surfaces-list xy-~a () q \n" j j))
 		(ti-menu-load-string (format #f "/display/objects/display velocity_xy-~a \n" j))
 		(ti-menu-load-string (format #f "/display/views/camera/target 0 0 0 \n"))
@@ -62,13 +86,32 @@
 			(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/velocity_xy-0~a \n" (list-ref v_array k) j))
 			(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/velocity_xy-~a \n" (list-ref v_array k) j))
 		)
+
+		(ti-menu-load-string (format #f "/preferences/appearance/graphics-foreground-color 0 0 0 \n"))
+		(ti-menu-load-string (format #f "/display/set/picture/driver png \n"))
+		(ti-menu-load-string (format #f "/display/set/picture/use-window-resolution? no \n"))
+		(ti-menu-load-string (format #f "/display/set/picture/set-standard-resolution \"2K QHD (2560x1440)\" \n"))
+		(ti-menu-load-string (format #f "/display/objects/edit velocity_xy-~a color-map visible? no q \n" j))
+		(ti-menu-load-string (format #f "/display/surface-mesh ~a () \n" string-walls))
+		(ti-menu-load-string (format #f "/display/objects/add-to-graphics velocity_xy-~a \n" j))
+		(ti-menu-load-string (format #f "/display/views/camera/target 0 0 0 \n"))
+		(ti-menu-load-string (format #f "/display/views/camera/position 1 1 1 \n"))
+		(ti-menu-load-string (format #f "/display/views/camera/up-vector 0 1 0 \n"))
+		(ti-menu-load-string (format #f "/display/views/camera/field (* ~a 15) (* ~a 15) \n" yarn-radius yarn-radius))
+		(if (< j 10)
+			(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/geometry-0~a \n" (list-ref v_array k) j))
+			(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/geometry-~a \n" (list-ref v_array k) j))
+		)
+		(ti-menu-load-string (format #f "/display/objects/edit velocity_xy-~a color-map visible? yes q \n" j))
+
 		(ti-menu-load-string (format #f "/preferences/appearance/graphics-foreground-color 255 255 255 \n"))
 		(ti-menu-load-string (format #f "/display/set/picture/driver png \n"))
 		(ti-menu-load-string (format #f "/display/set/picture/use-window-resolution? no \n"))
 		(ti-menu-load-string (format #f "/display/set/picture/set-standard-resolution \"2K QHD (2560x1440)\" \n"))
-		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/alignment \"Left\" \n"))
-		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-type \"float\" \n"))
-		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-precision 3 \n"))
+		(ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/show-colormap yes \n"))
+                (ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/alignment \"Left\" \n"))
+                (ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-type \"float\" \n"))
+                (ti-menu-load-string (format #f "/preferences/graphics/colormap-settings/number-format-precision 3 \n"))
 		(ti-menu-load-string (format #f "/display/objects/create contour vel_xy_in_plane-~a field vel-mag-xy-rel range-option auto-range-on global-range? yes q surfaces-list xy-~a () q \n" j j))
 		(ti-menu-load-string (format #f "/display/objects/create vector vector_xy_in_plane-~a color-map visible? no q field vel-mag-xy-rel scale scale-f 1.5 q skip 50 style \"arrow\" surfaces-list xy-~a () vector-field velocity vector-opt color \"black\" in-plane? yes q q \n" j j))
 		(ti-menu-load-string (format #f "/display/objects/display vel_xy_in_plane-~a \n" j))
@@ -81,6 +124,11 @@
 			(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/vel-mag-xy-rel-0~a \n" (list-ref v_array k) j))
 			(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/vel-mag-xy-rel-~a \n" (list-ref v_array k) j))
 		)
+
+		(ti-menu-load-string (format #f "/display/objects/delete velocity_xy-~a \n" j))
+		(ti-menu-load-string (format #f "/display/objects/delete vel_xy_in_plane-~a \n" j))
+		(ti-menu-load-string (format #f "/display/objects/delete vector_xy_in_plane-~a \n" j))
+
 	)
 
 	(ti-menu-load-string (format #f "/surface/plane-surface yz point-and-normal 0 0 0 normal 1 0 0 \n"))
@@ -143,6 +191,11 @@
 	(ti-menu-load-string (format #f "/display/views/camera/up-vector 1 0 0 \n"))
 	(ti-menu-load-string (format #f "/display/views/camera/field (* yarn-length 1.78) (* yarn-length 1) \n"))
 	(ti-menu-load-string (format #f "/display/save-picture ./snapshots/v~a/vel-mag-xy-rel-xz-plane \n" (list-ref v_array k)))
+
+	(ti-menu-load-string (format #f "/display/objects/delete velocity_yz \n"))
+	(ti-menu-load-string (format #f "/display/objects/delete vel-mag-xy-rel-yz-plane \n"))
+	(ti-menu-load-string (format #f "/display/objects/delete velocity_xz \n"))
+	(ti-menu-load-string (format #f "/display/objects/delete vel-mag-xy-rel-xz-plane \n"))
 )
 
 /exit yes
