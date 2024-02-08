@@ -200,8 +200,9 @@ class Analysis(Parameters):
                 outfile.write('\t(write_data)\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/define/user-defined/execute-on-demand '
                               '\\"store_pressure_traction::post_process\\"\\n"))\n')
-                outfile.write('\t(ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \n")) \n')
-                outfile.write('\t(ti-menu-load-string (format #f "/display/save-picture residuals_v~a \n" '
+                outfile.write(
+                    '\t(ti-menu-load-string (format #f "/plot/residuals yes yes yes yes yes yes yes \\n")) \n')
+                outfile.write('\t(ti-menu-load-string (format #f "/display/save-picture residuals_v~a \\n" '
                               '(list-ref v_array k))) \n')
                 outfile.write(')\n')
                 outfile.write('(send_message "data_stored")\n')
@@ -380,7 +381,7 @@ class Analysis(Parameters):
                 yarn_end_array = np.repeat(yarn_end.reshape(1, -1), data.shape[0], axis=0)
                 is_before_end = np.dot(yarn_end_array - data[:, :3], self.yarn_axis) >= 0
                 # is_core = np.sqrt(data[:, 0] ** 2 + data[:, 1] ** 2) <= 160e-6
-                data_filter = is_past_start * is_before_end #* is_core
+                data_filter = is_past_start * is_before_end  # * is_core
                 data = data[data_filter]
                 fp = np.zeros((data.shape[0], self.dimensions))
                 ft = np.zeros((data.shape[0], self.dimensions))
@@ -405,8 +406,8 @@ class Analysis(Parameters):
                     self.write_vtk_files(data, nodefile, vtkfile, thread)
 
             # convert to linear force
-            self.p_force /= (self.l_yarn * (1 - cutoff))
-            self.t_force /= (self.l_yarn * (1 - cutoff))
+            self.p_force /= (self.l_yarn * (1 - 2 * cutoff))
+            self.t_force /= (self.l_yarn * (1 - 2 * cutoff))
             tot_force = self.p_force + self.t_force
             # residual to check whether moment is parallel to yarn axis
             norm_moment = np.linalg.norm(self.moment)
@@ -434,12 +435,12 @@ class Analysis(Parameters):
             print('Unit vector in drag direction: ', e_trans_drag)
             print('Unit vector in lift direction: ', e_trans_lift)
 
-            c_long = np.dot(tot_force, self.yarn_axis) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn * np.pi)
+            c_long = np.dot(tot_force, self.yarn_axis) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn)
             if c < 0:  # yarn_axis and velocity direction partly oppose each other --> revert sign of coefficient
                 c_long *= -1
             c_trans_d = np.dot(tot_force, e_trans_drag) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn)
             c_trans_l = np.dot(tot_force, e_trans_lift) * 2 / (self.rho * v ** 2 * 2 * self.r_yarn)
-            c_m = self.moment * 2 / (self.rho * v ** 2 * np.pi * (2 * self.r_yarn) ** 2)
+            c_m = self.moment * 2 / (self.rho * v ** 2 * (2 * self.r_yarn) ** 2)
             mu = 1.7894e-05
             Re = v * (2 * self.r_yarn) * self.rho / mu
 
