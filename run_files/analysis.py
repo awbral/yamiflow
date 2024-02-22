@@ -413,7 +413,7 @@ class Analysis(Parameters):
             norm_moment = np.linalg.norm(self.moment)
             residual = np.dot(self.moment / norm_moment, self.yarn_axis)
             # convert to linear moment, multiply with residual to get directionality right (residual should be +/- 1)
-            self.moment = norm_moment / (self.l_yarn * (1 - cutoff)) * residual
+            self.moment = norm_moment / (self.l_yarn * (1 - 2* cutoff)) * residual
 
             force_matrix[iteration, 1:] = np.hstack((self.p_force, self.t_force, tot_force, self.moment))
             force_matrix[iteration, 0] = v
