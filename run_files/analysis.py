@@ -188,8 +188,8 @@ class Analysis(Parameters):
                     '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/pressure 11 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/iterate ~a\\n" n-1sto-iter))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/density 1 \\n"))\n')
-#                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
-#                outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
+                # outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/k 1 \\n"))\n')
+                # outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/omega 1 \\n"))\n')
                 outfile.write(
                     '\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/temperature 1 \\n"))\n')
                 outfile.write('\t(ti-menu-load-string (format #f "/solve/set/discretization-scheme/mom 1 \\n"))\n')
@@ -413,7 +413,7 @@ class Analysis(Parameters):
             norm_moment = np.linalg.norm(self.moment)
             residual = np.dot(self.moment / norm_moment, self.yarn_axis)
             # convert to linear moment, multiply with residual to get directionality right (residual should be +/- 1)
-            self.moment = norm_moment / (self.l_yarn * (1 - 2* cutoff)) * residual
+            self.moment = norm_moment / (self.l_yarn * (1 - 2 * cutoff)) * residual
 
             force_matrix[iteration, 1:] = np.hstack((self.p_force, self.t_force, tot_force, self.moment))
             force_matrix[iteration, 0] = v
